@@ -83,6 +83,7 @@ function capawp() {
 	local site="$1";
 	local stages="$2";
 	# marliespanciera, lloop, lloopwp, sonephon, four_five_six
+	# mp,              lp,    lpwp,    sp,       ffs 
 	if [ -z "$site" ]
 	then
 		exit "Must enter a site - mp, lp, lpwp, sp, ffs"
@@ -274,6 +275,19 @@ function repair_extensions() {
 		done
 }
 
+function temp() {
+# 	find .  -name "*.png"
+	local number=1;
+	find .  -name "*.png" -print0 | 
+		while read -d $'\0' fil
+		do
+#			echo $fil;
+			rename "s/.*/default_$number\.png/" "$fil";
+# 			mv -i "$fil" "$fil.mp3"
+			number=$(( $number + 1 ));
+		done
+}
+
 # Find the Ableton Live .asd files from the working directory recursively
 # Move them to a new folder named "Pulled_ableton_files" created
 # in the working directory
@@ -333,7 +347,7 @@ function remove_camelcase() {
 #
 # Fix titles for files that have all capital letters in the title
 function fix_all_caps() {
-	find . -type f -name "*" -not -name ".DS_Store" -execdir rename -f  "s/([A-Z])([A-Z]+_?)/\$1\L\$2/g" "{}"  \;
+	find . -name "*" -not -name ".DS_Store" -execdir rename -f  "s/([A-Z])([A-Z]+_?)/\$1\L\$2/g" "{}"  \;
 	# this one turns all lowers to capital-lower
 	# gfind . -depth -regextype posix-extended -regex ".*\<[[:lower:]][^mp3].*" -execdir rename -f 's/(?<![\.|\342\200\231|\047])\b([a-z])/uc("$&")/ge' "{}" \; 
 }
